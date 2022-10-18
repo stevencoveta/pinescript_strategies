@@ -1,0 +1,27 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © oileander
+
+//@version=5
+strategy("BBbands",initial_capital= 10000,default_qty_type=strategy.percent_of_equity, default_qty_value=100)
+
+smaValue = ta.sma(close, 20)
+stdDev   = ta.stdev(close, 20)
+
+upperBand = smaValue + (stdDev * 2)
+lowerBand = smaValue - (stdDev * 2)
+
+pb = (close - lowerBand)  / (upperBand - lowerBand)
+//bbw = (upperBand - lowerBand) / 100 * smaValue
+//mdlband = ((upperBand - lowerBand ) / smaValue) * 100
+
+
+if pb > 1.2
+    strategy.entry("short", strategy.short)
+    strategy.close("short",when = pb < 1)
+
+
+if pb < -0.32
+    strategy.entry("long", strategy.long)
+    strategy.close("long",when = pb > 0)
+
+plot(pb)
